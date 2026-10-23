@@ -1,0 +1,181 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json#",
+  "view": {
+    "kind": "Form",
+    "properties": {
+      "title": "Deploy Ekco Cloud Desktop Base",
+      "steps": [
+        {
+          "name": "Basics",
+          "label": "Basics",
+          "elements": [
+            {
+              "name": "resourceScope",
+              "type": "Microsoft.Common.ResourceScope",
+              "location": {
+                "resourceTypes": ["microsoft.resources/resourcegroups"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "CustomerInformation",
+          "label": "Customer Information",
+          "elements": [
+            {
+              "name": "identityShort",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Identity Short:",
+              "placeholder": "Customer short name",
+              "constraints": {
+                "required": true,
+                "regex": "^[a-zA-Z0-9]{2,6}$",
+                "validationMessage": "Use 2 to 6 letters or numbers."
+              },
+              "visible": true
+            },
+            {
+              "name": "customerName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Customer Name:",
+              "constraints": { "required": true },
+              "visible": true
+            },
+            {
+              "name": "subscriptionPurpose",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Subscription Purpose:",
+              "defaultValue": "avd",
+              "constraints": {
+                "required": true,
+                "regex": "^[a-zA-Z0-9]{2,6}$",
+                "validationMessage": "Use 2 to 6 letters or numbers."
+              },
+              "visible": true
+            },
+            {
+              "name": "idSubscriptionId",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Identity Services Subscription ID:",
+              "constraints": {
+                "required": true,
+                "regex": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+                "validationMessage": "Enter a valid subscription ID."
+              },
+              "visible": true
+            },
+            {
+              "name": "mainSubscriptionId",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Main Subscription ID:",
+              "constraints": {
+                "required": true,
+                "regex": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+                "validationMessage": "Enter a valid subscription ID."
+              },
+              "visible": true
+            }
+          ]
+        },
+        {
+          "name": "NetworkAndImage",
+          "label": "Network and Image",
+          "elements": [
+            {
+              "name": "avdvNetCIDR",
+              "type": "Microsoft.Common.TextBox",
+              "label": "AVD Virtual Network CIDR:",
+              "defaultValue": "10.x.16.0/24",
+              "constraints": { "required": true },
+              "visible": true
+            },
+            {
+              "name": "idvNetCIDR",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Identity Virtual Network CIDR:",
+              "defaultValue": "10.x.8.0/24",
+              "constraints": { "required": true },
+              "visible": true
+            },
+            {
+              "name": "AVDSourceImageVMOffer",
+              "type": "Microsoft.Common.DropDown",
+              "label": "Source Image Offer:",
+              "defaultValue": "Windows 11",
+              "constraints": {
+                "required": true,
+                "allowedValues": [
+                  { "label": "Windows 11", "value": "Windows-11" },
+                  { "label": "Windows 10", "value": "Windows-10" }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "AVDSourceImageVMReferenceVersion",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Source Image Reference Version:",
+              "defaultValue": "latest",
+              "constraints": { "required": true },
+              "visible": true
+            },
+            {
+              "name": "AVDSourceImageVMPublisherName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Source Image Publisher:",
+              "defaultValue": "MicrosoftWindowsDesktop",
+              "constraints": { "required": true },
+              "visible": true
+            },
+            {
+              "name": "enablePeering",
+              "type": "Microsoft.Common.CheckBox",
+              "label": "Enable Default Network Peering",
+              "defaultValue": true,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "name": "Options",
+          "label": "Deployment Options",
+          "elements": [
+            {
+              "name": "skuNamePip",
+              "type": "Microsoft.Common.DropDown",
+              "label": "Public IP SKU:",
+              "defaultValue": "Standard",
+              "constraints": {
+                "required": true,
+                "allowedValues": [
+                  { "label": "Standard", "value": "Standard" },
+                  { "label": "Basic", "value": "Basic" }
+                ]
+              },
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    "outputs": {
+      "kind": "Subscription",
+      "location": "[steps('Basics').resourceScope.location.name]",
+      "subscriptionId": "[steps('Basics').resourceScope.subscription.id]",
+      "parameters": {
+        "identityShort": "[steps('CustomerInformation').identityShort]",
+        "customerName": "[steps('CustomerInformation').customerName]",
+        "subscriptionPurpose": "[steps('CustomerInformation').subscriptionPurpose]",
+        "idSubscriptionId": "[steps('CustomerInformation').idSubscriptionId]",
+        "mainSubscriptionId": "[steps('CustomerInformation').mainSubscriptionId]",
+        "avdvNetCIDR": "[steps('NetworkAndImage').avdvNetCIDR]",
+        "idvNetCIDR": "[steps('NetworkAndImage').idvNetCIDR]",
+        "AVDSourceImageVMOffer": "[steps('NetworkAndImage').AVDSourceImageVMOffer]",
+        "AVDSourceImageVMReferenceVersion": "[steps('NetworkAndImage').AVDSourceImageVMReferenceVersion]",
+        "AVDSourceImageVMPublisherName": "[steps('NetworkAndImage').AVDSourceImageVMPublisherName]",
+        "enablePeering": "[steps('NetworkAndImage').enablePeering]",
+        "skuNamePip": "[steps('Options').skuNamePip]"
+      }
+    }
+  }
+}
